@@ -10,7 +10,11 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
+use App\Helpers\Api;
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    $data = $router->app->version();
+    return response()->json(Api::format(1, $data, 'Success'), 200);
 });
+
+
+$router->get('/curl-sample', 'ExampleController@index'); 
