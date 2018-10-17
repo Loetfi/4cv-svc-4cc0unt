@@ -20,7 +20,7 @@ class Users extends Migration
             $table->string('Email');
             $table->string('Password');
             $table->string('PhoneNumber');
-            $table->string('Channel');
+            $table->string('Channel')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
