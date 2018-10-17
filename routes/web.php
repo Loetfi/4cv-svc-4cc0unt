@@ -16,5 +16,15 @@ $router->get('/', function () use ($router) {
     return response()->json(Api::format(1, $data, 'Success'), 200);
 });
 
-
 $router->get('/curl-sample', 'ExampleController@index'); 
+
+$router->post('/login','AuthController@login');
+$router->post('/check','AuthController@check');
+
+$router->group(['middleware'=>'jwt'], function($router) {
+	$router->get('/me', function() {
+		return 'me';
+	});
+
+	$router->get('/logout','ExampleController@logout');
+});
