@@ -60,7 +60,7 @@ class AuthController extends Controller
 
         } catch (\Exception $e) {
 
-            return response()->json(Api::format('0',['message'=> $e->getMessage()],'Error'), 500);
+            return response()->json(Api::format('0',[], $e->getMessage()), 500);
 
         }
         return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,'expires_in' => Auth::guard()->factory()->getTTL() * 60],'Success'), 200);
@@ -78,30 +78,22 @@ class AuthController extends Controller
 
     public function check(Request $request)
     {
-        $data = $request->header('Authorization');
-        print_r($request->input('acces_token'));die();
         try {
-
+            
+            $request->header('Authorization');
+            
             if (! $user = $this->jwt->parseToken()->authenticate()) {
                 return response()->json(['user_not_found'], 404);
             }
 
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+        } catch (\Exception $e) {
 
-            return response()->json(['token_expired'], $e->getStatusCode());
+            return response()->json(Api::format('0',[], $e->getMessage()), 500);
 
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-            return response()->json(['token_invalid'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['token_absent'], $e->getStatusCode());
-
-        }
+        } 
 
         // the token is valid and we have found the user via the sub claim
-        return response()->json(compact('user'));
+        return response()->json(Api::format('1',['user'=>$user],'Success'),200);
     }
 
 }
