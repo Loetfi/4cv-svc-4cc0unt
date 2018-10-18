@@ -113,7 +113,7 @@ class AuthController extends Controller
             'fullname'          => 'required|string',
             'email'             => 'required|email|unique:users,Email',
             'password'          => 'required|min:6',
-            'confirm_password'  => 'required|same:password',
+            // 'confirm_password'  => 'required|same:password',
             'phone_number'      => 'required|numeric',
         ]);
 

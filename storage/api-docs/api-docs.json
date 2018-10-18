@@ -2,16 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "SVC-ACCOUNT",
-        "description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "email": "apiteam@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0.0"
+        // "description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters."
     },
     "paths": {
         "/send": {
@@ -65,7 +56,8 @@
                             "required": ["to", "subject","body","type","attachment"],
                             "$schema": "http://json-schema.org/draft-04/schema#"
                         }
-                    }],
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": ""
@@ -74,20 +66,145 @@
                 "security": []
             },
         },
-
-
-
-        "/check-token": {
-            "get": {
-                "summary": "Check token",
+        "/svc-account/public/auth/login": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Login",
+                "description": "Login",
+                "operationId": "",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": { 
+                                "email": {
+                                    "type": "string",
+                                    "example": "admin@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "secret"
+                                }
+                            },
+                            "required": ["email", "password"],
+                            "$schema": "http://json-schema.org/draft-04/schema#"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Get user with token"
-                    },
-                    "default": {
-                        "description": "an \"unexpected\" error"
+                        "description": ""
                     }
-                }
+                },
+                "security": []
+            },
+        },
+        "/svc-account/public/auth/register": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Register",
+                "description": "Register",
+                "operationId": "",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": { 
+                                "fullname": {
+                                    "type": "string",
+                                    "example": "Juned aja"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "secret"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "admin@gmail.com"
+                                },
+                                "phone_number": {
+                                    "type": "string",
+                                    "example": "891729387"
+                                }
+                            },
+                            "required": ["email", "password"],
+                            "$schema": "http://json-schema.org/draft-04/schema#"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": []
+            },
+        },
+        "/svc-account/public/auth/check-token": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Get user by check token",
+                "produces":[
+                    "application/json"
+                ],
+                "consumes":[
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "access_token",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": { 
+                                "to": {
+                                    "type": "string",
+                                    "example": "lutfi.f.hidayat@gmail.com"
+                                }
+                            },
+                            "required": ["to"],
+                            "$schema": "http://json-schema.org/draft-04/schema#"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "access_token": "Token Invalid"
+                    }
+                ]
             }
         }
     },
