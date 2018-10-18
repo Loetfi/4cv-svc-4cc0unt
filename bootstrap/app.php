@@ -68,6 +68,7 @@ $app->routeMiddleware([
     'jwt' => App\Http\Middleware\Jwt::class,
 ]);
 
+$app->configure('swagger-lume');
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -84,6 +85,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 // JWT AUTH
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+// Swagger lume
+$app->register(\SwaggerLume\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
