@@ -18,13 +18,14 @@ $router->get('/', function () use ($router) {
 
 $router->get('/curl-sample', 'ExampleController@index'); 
 
-$router->post('/login','AuthController@login');
-$router->post('/check','AuthController@check');
+$router->post('auth/login','AuthController@login');
+$router->post('auth/register','AuthController@register');
+$router->post('auth/check-token','AuthController@getUserByToken');
 
-$router->group(['middleware'=>'jwt'], function($router) {
+$router->group(['middleware'=>'jwt','prefix'=>'auth'], function($router) {
 	$router->get('/me', function() {
 		return 'me';
 	});
 
-	$router->get('/logout','ExampleController@logout');
+	$router->post('logout','AuthController@logout');
 });
