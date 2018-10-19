@@ -28,16 +28,15 @@ class AuthController extends Controller
      * @var \Tymon\JWTAuth\JWTAuth
      */
     protected $jwt;
-    protected $manager;
+    // protected $manager;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(JWTAuth $jwt, Manager $manager)
+    public function __construct(JWTAuth $jwt)
     {
         $this->jwt  = $jwt;
-        $this->manager = $manager;
     }
 
     /**
@@ -150,18 +149,23 @@ class AuthController extends Controller
             }
             catch (JWTException $e)
             {
-                return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+                return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);    
             }
 
-            $user_set_token = $this->jwt->setToken($refreshed)->toUser();
+            $user_set_token = $this->jwt->setToken($refresh_token)->toUser();
+            
+            $this->guard()->login($user_set_token, false);
+            
+            return response()->json(Api::format('1',['token_type'=>'Bearer','expires_in' => $this->guard()->factory()->getTTL() * 60, 
+            'refresh_token'=> $refresh_token],'Success'),200);
 
         } catch (JWTException $e) {
+            
             return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+        
         }
 
-        $this->guard()->login($user_set_token, false);
-
-        return response()->json(Api::format('1',['user'=>$user,'token_type'=>'Bearer','expires_in' => $this->guard()->factory()->getTTL() * 60, 'refresh_token'=> $refresh_token],'Success'),200);
+        return response()->json(Api::format('1',['user'=>$user],'Success'),200);
     }
 
 }
