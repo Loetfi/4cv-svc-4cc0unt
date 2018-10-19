@@ -143,14 +143,25 @@ class AuthController extends Controller
                 return response()->json(['user_not_found'], 404);
             } 
 
+        } catch (TokenExpiredException  $e) {
+            try {
+                $refresh_token = $this->jwt->parseToken()->refresh();
+                $request->header('Authorization', 'Bearer ' . $refresh_token);
+            }
+            catch (JWTException $e)
+            {
+                return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+            }
+
+            $user_set_token = $this->jwt->setToken($refreshed)->toUser();
+
         } catch (JWTException $e) {
             return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
         }
 
-        $refresh_token = $this->jwt->parseToken()->refresh();
+        $this->guard()->login($user_set_token, false);
 
-        return response()->json(Api::format('1',['user'=>$user,'token_type'=>'Bearer', 'refresh_token'=> $refresh_token,
-            'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'),200);
+        return response()->json(Api::format('1',['user'=>$user,'token_type'=>'Bearer','expires_in' => $this->guard()->factory()->getTTL() * 60, 'refresh_token'=> $refresh_token],'Success'),200);
     }
 
 }
