@@ -14,28 +14,6 @@ use Tymon\JWTAuth\JWTAuth;
 class AuthController extends Controller
 {
     /**
-     * @OA\OpenApi(
-     *     @OA\Info(
-     *         version="1.0.0",
-     *         title="SVC-ACCOUNT",
-     *         description="This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
-     *         termsOfService="http://swagger.io/terms/",
-     *         @OA\Contact(
-     *             email="apiteam@swagger.io"
-     *         ),
-     *         @OA\License(
-     *             name="Apache 2.0",
-     *             url="http://www.apache.org/licenses/LICENSE-2.0.html"
-     *         )
-     *     ),
-     *     @OA\ExternalDocumentation(
-     *         description="Find out more about Swagger",
-     *         url="http://swagger.io"
-     *     )
-     * )
-     */
-
-    /**
     * @var Illuminate\Support\Facades\Auth;
     */
     private function guard()
@@ -147,21 +125,6 @@ class AuthController extends Controller
         return response()->json(Api::format('1',[],'Success logout'), 200);
     }
 
-    /**
-     * @OA\Get(
-     *   path="/check-token",
-     *   summary="Check token",
-     *   @OA\Response(
-     *     response=200,
-     *     description="Get user with token"
-     *   ),
-     *   @OA\Response(
-     *     response="default",
-     *     description="an ""unexpected"" error"
-     *   )
-     * )
-     */
-    
     /**
     * @param header Authorization Bearer token
     * @return json response

@@ -1,9 +1,13 @@
 {
-    "openapi": "3.0.0",
+    "swagger": "2.0.0",
     "info": {
         "title": "SVC-ACCOUNT",
         // "description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters."
     },
+    "schemes": [
+        "http",
+        "https"
+    ],
     "paths": {
         "/send": {
             "post": {
@@ -127,16 +131,17 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "body",
-                        "description": "",
+                        "in": "body",
+                        "description": "Register new user",
                         "required": true,
                         "schema": {
                             "type": "object",
                             "properties": { 
                                 "fullname": {
+                                    // "name":"fullname",
                                     "type": "string",
-                                    "example": "Juned aja"
+                                    "example": "Juned aja",
                                 },
                                 "password": {
                                     "type": "string",
@@ -151,8 +156,8 @@
                                     "example": "891729387"
                                 }
                             },
-                            "required": ["email", "password"],
-                            "$schema": "http://json-schema.org/draft-04/schema#"
+                            // "required": ["fullname","phone_number","email", "password"],
+                            // "$schema": "http://json-schema.org/draft-04/schema#"
                         }
                     }
                 ],
