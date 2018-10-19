@@ -83,6 +83,7 @@ $app->configure('swagger-lume');
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
 // JWT AUTH
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // Swagger lume

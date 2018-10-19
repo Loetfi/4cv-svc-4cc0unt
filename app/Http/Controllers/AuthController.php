@@ -10,6 +10,9 @@ use App\Helpers\RestCurl;
 use App\Helpers\Api;
 use App\User;
 use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Manager;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class AuthController extends Controller
 {
@@ -25,15 +28,16 @@ class AuthController extends Controller
      * @var \Tymon\JWTAuth\JWTAuth
      */
     protected $jwt;
-
+    protected $manager;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(JWTAuth $jwt)
+    public function __construct(JWTAuth $jwt, Manager $manager)
     {
         $this->jwt  = $jwt;
+        $this->manager = $manager;
     }
 
     /**
@@ -137,15 +141,16 @@ class AuthController extends Controller
             
             if (! $user = $this->jwt->parseToken()->authenticate()) {
                 return response()->json(['user_not_found'], 404);
-            }
+            } 
 
-        } catch (\Exception $e) {
+        } catch (JWTException $e) {
+            return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+        }
 
-            return response()->json(Api::format('0',[], $e->getMessage()), 500);
+        $refresh_token = $this->jwt->parseToken()->refresh();
 
-        } 
-
-        return response()->json(Api::format('1',['user'=>$user],'Success'),200);
+        return response()->json(Api::format('1',['user'=>$user,'token_type'=>'Bearer', 'refresh_token'=> $refresh_token,
+            'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'),200);
     }
 
 }
