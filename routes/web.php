@@ -20,12 +20,10 @@ $router->get('/curl-sample', 'ExampleController@index');
 
 $router->post('auth/login','AuthController@login');
 $router->post('auth/register','AuthController@register');
-$router->post('auth/check-token','AuthController@getUserByToken');
+$router->get('auth/check-token','AuthController@checkToken');
 
 $router->group(['middleware'=>'jwt','prefix'=>'auth'], function($router) {
-	$router->get('/me', function() {
-		return 'me';
-	});
+	$router->get('/me', 'ExampleController@me');
 
 	$router->post('logout','AuthController@logout');
 });

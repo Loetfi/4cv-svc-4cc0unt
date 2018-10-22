@@ -10,7 +10,6 @@ use App\Helpers\RestCurl;
 use App\Helpers\Api;
 use App\User;
 use Tymon\JWTAuth\JWTAuth;
-use Tymon\JWTAuth\Manager;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
@@ -28,7 +27,7 @@ class AuthController extends Controller
      * @var \Tymon\JWTAuth\JWTAuth
      */
     protected $jwt;
-    // protected $manager;
+
     /**
      * Create a new controller instance.
      *
@@ -78,7 +77,8 @@ class AuthController extends Controller
 
         }
 
-        return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
+        return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,
+            'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
     }
 
     /**
@@ -123,7 +123,7 @@ class AuthController extends Controller
     */
     public function logout()
     {
-        $this->guard()->logout();
+        // $this->guard()->logout();
 
         return response()->json(Api::format('1',[],'Success logout'), 200);
     }
@@ -132,20 +132,22 @@ class AuthController extends Controller
     * @param header Authorization Bearer token
     * @return json response
     */
-    public function getUserByToken(Request $request)
+    public function checkToken(Request $request)
     {
         try {
             
             $request->header('Authorization');
             
             if (! $user = $this->jwt->parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
+                return response()->json(Api::format('0',['message'=>'Unauthorize'],'Error'), 404);
             } 
-
         } catch (TokenExpiredException  $e) {
             try {
+                
                 $refresh_token = $this->jwt->parseToken()->refresh();
+                
                 $request->header('Authorization', 'Bearer ' . $refresh_token);
+
             }
             catch (JWTException $e)
             {

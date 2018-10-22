@@ -40,4 +40,5 @@ return [
     */
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
+    'url_check_token' => env('APP_URL_CHECK_TOKEN'),
 ];

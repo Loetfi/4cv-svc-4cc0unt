@@ -61,9 +61,9 @@ class ExampleController extends Controller
         return response()->json(Api::format('1',['type'=>'Bearer','access_token'=>$token],'Success'), 200);
     }
 
-    public function me()
+    public function me(Request $request)
     {
-        // Api::format('1','');
+        print_r($request->FullName);
     }
 
     public function logout()
