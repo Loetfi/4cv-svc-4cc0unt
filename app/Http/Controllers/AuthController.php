@@ -12,6 +12,7 @@ use App\User;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use App\Repositories\AuthRepo as AuthRepo;
 
 class AuthController extends Controller
 {
@@ -52,7 +53,7 @@ class AuthController extends Controller
 
         try {
             
-            $user = \App\User::where('Email','=',$request->email);
+            $user = AuthRepo::SearchEmail($request->email);
             
             if($user->count() > 0) {
 	            
