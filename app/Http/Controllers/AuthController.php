@@ -107,7 +107,7 @@ class AuthController extends Controller
                 'PhoneNumer'    => $request->phone_number
             ];
 
-            $user = User::create($data_user);
+            $user = AuthRepo::RegisterUser($data_user);
 
             return response()->json(Api::format('1',['user'=>$user],'Success Register'), 200);
 

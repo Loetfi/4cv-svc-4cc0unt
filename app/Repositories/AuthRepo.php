@@ -16,5 +16,15 @@ class AuthRepo
 			throw new \Exception($e->getMessage(), 500);
 		}
 
+	}
+
+	public static function RegisterUser($data)
+	{
+		try {
+			return $user = UserDB::create($data);
+		} catch (QueryException $e) {
+			throw new \Exception($e->getMessage(), 500);
+			
+		}
 	} 
 }
