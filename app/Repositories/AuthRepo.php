@@ -11,7 +11,7 @@ class AuthRepo
 	{
 		try { 
 			$res_email = $email ? $email : '';
-			return $user = UserDB::where('Email','=',$res_email);
+			return UserDB::where('Email','=',$res_email);
 		}catch(QueryException $e){
 			throw new \Exception($e->getMessage(), 500);
 		}
@@ -21,10 +21,19 @@ class AuthRepo
 	public static function RegisterUser($data)
 	{
 		try {
-			return $user = UserDB::create($data);
+			return UserDB::create($data);
 		} catch (QueryException $e) {
 			throw new \Exception($e->getMessage(), 500);
 			
+		}
+	}
+
+	public static function UserByProvider($param)
+	{
+		try {
+			return UserDB::where($param)->first();
+		} catch (QueryException $e) {
+			throw new \Exception($e->getMessage(), 500);
 		}
 	} 
 }

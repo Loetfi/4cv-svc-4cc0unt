@@ -42,18 +42,18 @@ class Jwt
             }
 
             $r =  (object) RestCurl::exec('GET',config('app.url_check_token'),[],$token);
-            // print_r($r->data->data->user);die();
+            // print_r($r);die();
             if($r->data->status !== '1')
             {
-                return response()->json(Api::format($r->data->status,[$r->data->data],$r->data->message), 200);
+                return response()->json(Api::format($r->data->status,$r->data->data,$r->data->message), 200);
             }   
         
         } catch (\Exception $e) {
-            return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+            return response()->json(Api::format('0',[],$e->getMessage()), 500);
         }
         
         if(isset($r))
-            $request->merge((array)$r->data->data->user);
+            $request->merge((array)$r->data->user);
         
         return $next($request);
     }

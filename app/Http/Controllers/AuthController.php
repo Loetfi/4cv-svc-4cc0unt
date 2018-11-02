@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\RestCurl;
 use App\Helpers\Api;
-use App\User;
+use App\Helpers\RestCurl;
+use App\Repositories\AuthRepo as AuthRepo;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use App\Repositories\AuthRepo as AuthRepo;
 
 class AuthController extends Controller
 {
@@ -93,10 +92,10 @@ class AuthController extends Controller
     {
         $this->validate($request, [
             'fullname'          => 'required|string',
-            'email'             => 'required|email|unique:users,Email',
+            // 'email'             => 'required|email|unique:users,Email',
             'password'          => 'required|min:6',
-            // 'confirm_password'  => 'required|same:password',
-            'phone_number'      => 'required|numeric',
+            'confirm_password'  => 'required|same:password',
+            // 'phone_number'      => 'required|numeric',
         ]);
 
         try {
@@ -104,16 +103,19 @@ class AuthController extends Controller
                 'FullName'      => $request->fullname,
                 'Email'         => $request->email,
                 'Password'      => Hash::make($request->password),
-                'PhoneNumer'    => $request->phone_number
+                'PhoneNumer'    => $request->phone_number ? $request->phone_number : null,
+                'Provider'      => $request->provider ? $request->provider : null,
+                'ProviderId'    => $request->provider_id ? $request->provider_id : null,
+                'Avatar'        => $request->avatar ? $request->avatar : null,
             ];
 
             $user = AuthRepo::RegisterUser($data_user);
 
-            return response()->json(Api::format('1',['user'=>$user],'Success Register'), 200);
+            return response()->json(Api::format('1',$user,'Success Register'), 200);
 
         } catch (\Exception $e) {
             
-            return response()->json(Api::format('0',['message'=> $e->getMessage()],'Error'), 500);
+            return response()->json(Api::format('0',[],$e->getMessage()), 500);
 
         }
     }
@@ -124,8 +126,8 @@ class AuthController extends Controller
     */
     public function logout()
     {
-        // $this->guard()->logout();
-
+        $this->guard()->logout();
+        // print_r($a);die();
         return response()->json(Api::format('1',[],'Success logout'), 200);
     }
 
@@ -138,10 +140,10 @@ class AuthController extends Controller
         try {
             
             $request->header('Authorization');
-            
+
             if (! $user = $this->jwt->parseToken()->authenticate()) {
-                return response()->json(Api::format('0',['message'=>'Unauthorize'],'Error'), 404);
-            } 
+                return response()->json(Api::format('0',[],'Unauthorize'), 404);
+            }
         } catch (TokenExpiredException  $e) {
             try {
                 
@@ -152,7 +154,7 @@ class AuthController extends Controller
             }
             catch (JWTException $e)
             {
-                return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);    
+                return response()->json(Api::format('0',[],$e->getMessage()), 500);    
             }
 
             $user_set_token = $this->jwt->setToken($refresh_token)->toUser();
@@ -164,11 +166,19 @@ class AuthController extends Controller
 
         } catch (JWTException $e) {
             
-            return response()->json(Api::format('0',['message'=>$e->getMessage()],'Error'), 500);
+            return response()->json(Api::format('0',[],$e->getMessage()), 500);
         
         }
 
-        return response()->json(Api::format('1',['user'=>$user],'Success'),200);
+        return response()->json(Api::format('1',$user,'Success'),200);
     }
 
+    public function checkUserProvider(Request $request)
+    {
+        $param = [
+            'ProviderId' => $request->provider_id
+        ];
+        $user = AuthRepo::UserByProvider($param);
+        return response()->json(Api::format(1,$user,'Success'), 200);
+    }
 }
