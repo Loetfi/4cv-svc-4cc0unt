@@ -18,7 +18,8 @@ class UsersTableSeeder extends Seeder
 		            'FullName' 	=> 'admin',
 		            'Email' 	=> 'admin@gmail.com',
 		            'Password' 	=> app('hash')->make('secret'),
-		            'PhoneNumber' => '89677899'
+		            'PhoneNumber' => '89677899',
+                    'Provider'  => 'manual'
 		        ]
 	        ]
     	);

@@ -14,13 +14,15 @@ class Users extends Migration
     public function up()
     {
 
-        Schema::create('Users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('UserId');
             $table->string('FullName');
-            $table->string('Email');
-            $table->string('Password');
-            $table->string('PhoneNumber');
-            $table->string('Channel')->nullable();
+            $table->string('Email')->nullable();
+            $table->string('Password', 60)->nullable();
+            $table->string('PhoneNumber')->nullable();
+            $table->string('Provider')->nullable();
+            $table->string('ProviderId')->nullable();
+            $table->string('Avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
