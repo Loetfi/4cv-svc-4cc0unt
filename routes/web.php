@@ -20,18 +20,18 @@ $router->get('/', function () use ($router) {
 
 $router->get('/curl-sample', 'ExampleController@index'); 
 
+$router->post('auth/check-user-provider','AuthController@checkUserProvider');
+
 $router->group(['prefix'=>'auth'], function($router) {
 
-	$router->group(['middleware'=>'jwt'], function($router) {
-		
+	$router->group(['middleware'=> 'jwt'], function($router) {
+
 		$router->get('check-token','AuthController@checkToken');
 		
 		$router->get('logout','AuthController@logout');
 	});
 	
-	$router->post('login','AuthController@login');
-	
 	$router->post('register','AuthController@register');
 	
-	$router->post('check-user-provider','AuthController@checkUserProvider');
+	$router->post('login','AuthController@login');
 });

@@ -142,7 +142,7 @@ class AuthController extends Controller
             $request->header('Authorization');
 
             if (! $user = $this->jwt->parseToken()->authenticate()) {
-                return response()->json(Api::format('0',[],'Unauthorize'), 404);
+                return response()->json(Api::format('0',[],'Unauthorized'), 401);
             }
         } catch (TokenExpiredException  $e) {
             try {
