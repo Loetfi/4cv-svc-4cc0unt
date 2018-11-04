@@ -41,8 +41,8 @@ class Jwt
                 throw new \Exception("Unauthorized", 401); 
             }
 
-            $r =  (object) RestCurl::exec('GET',config('app.url_check_token'),[],$token);
-            // print_r($r);die();
+            $r =  (object) RestCurl::exec('GET',env('URL_SERVICE_ACCOUNT').'/auth/check-token',[],$token);
+            
             if($r->data->status !== '1')
             {
                 return response()->json(Api::format($r->data->status,$r->data->data,$r->data->message), 200);

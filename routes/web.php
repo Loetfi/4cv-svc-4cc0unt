@@ -24,14 +24,18 @@ $router->post('auth/check-user-provider','AuthController@checkUserProvider');
 
 $router->group(['prefix'=>'auth'], function($router) {
 
-	$router->group(['middleware'=> 'jwt'], function($router) {
+$router->get('check-token','AuthController@checkToken');
 
-		$router->get('check-token','AuthController@checkToken');
-		
-		$router->get('logout','AuthController@logout');
-	});
+	// $router->group(['middleware'=>'jwt'], function($router) {
+
+
+	// 	$router->get('logout','AuthController@logout');
+	// });
 	
-	$router->post('register','AuthController@register');
+$router->post('login','AuthController@login');
 	
-	$router->post('login','AuthController@login');
+$router->post('register','AuthController@register');
+	
+$router->post('check-user-provider','AuthController@checkUserProvider');
+
 });

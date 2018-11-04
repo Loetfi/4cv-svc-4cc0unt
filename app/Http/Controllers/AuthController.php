@@ -51,35 +51,35 @@ class AuthController extends Controller
         ]);
 
         try {
-            
+
             $user = AuthRepo::SearchEmail($request->email);
             
             if($user->count() > 0) {
-	            
+
                 if(Hash::check($request->password, $user->first()->Password)) {
-	                
+
                     if (! $token = $this->jwt->fromUser($user->first())) {
-	                    return response()->json(Api::format('1',[],'User not found'), 404);
-	                }
+                     return response()->json(Api::format('1',[],'User not found'), 404);
+                 }
 
-	            } else {
-	                
-                    return response()->json(Api::format('0',[],'Your password wrong'), 400);
-	            }
-            } else {
-				
-                return response()->json(Api::format('0',[],'Your email not registered'), 400);           	
+             } else {
+
+                return response()->json(Api::format('0',[],'Your password wrong'), 400);
             }
+        } else {
 
-        } catch (\Exception $e) {
-
-            return response()->json(Api::format('0',[], $e->getMessage()), 500);
-
+            return response()->json(Api::format('0',[],'Your email not registered'), 400);           	
         }
 
-        return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,
-            'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
+    } catch (\Exception $e) {
+
+        return response()->json(Api::format('0',[], $e->getMessage()), 500);
+
     }
+
+    return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,
+        'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
+}
 
     /**
     * @param FullName string
@@ -92,10 +92,10 @@ class AuthController extends Controller
     {
         $this->validate($request, [
             'fullname'          => 'required|string',
-            // 'email'             => 'required|email|unique:users,Email',
+            'email'             => 'required|email|unique:users,Email',
             'password'          => 'required|min:6',
             'confirm_password'  => 'required|same:password',
-            // 'phone_number'      => 'required|numeric',
+            'phone_number'      => 'numeric',
         ]);
 
         try {
@@ -114,7 +114,7 @@ class AuthController extends Controller
             return response()->json(Api::format('1',$user,'Success Register'), 200);
 
         } catch (\Exception $e) {
-            
+
             return response()->json(Api::format('0',[],$e->getMessage()), 500);
 
         }
@@ -138,7 +138,7 @@ class AuthController extends Controller
     public function checkToken(Request $request)
     {
         try {
-            
+
             $request->header('Authorization');
 
             if (! $user = $this->jwt->parseToken()->authenticate()) {
@@ -146,7 +146,7 @@ class AuthController extends Controller
             }
         } catch (TokenExpiredException  $e) {
             try {
-                
+
                 $refresh_token = $this->jwt->parseToken()->refresh();
                 
                 $request->header('Authorization', 'Bearer ' . $refresh_token);
@@ -162,23 +162,42 @@ class AuthController extends Controller
             $this->guard()->login($user_set_token, false);
             
             return response()->json(Api::format('1',['token_type'=>'Bearer','expires_in' => $this->guard()->factory()->getTTL() * 60, 
-            'refresh_token'=> $refresh_token],'Success'),200);
+                'refresh_token'=> $refresh_token],'refresh_token'),200);
 
         } catch (JWTException $e) {
-            
+
             return response()->json(Api::format('0',[],$e->getMessage()), 500);
-        
+
         }
 
-        return response()->json(Api::format('1',$user,'Success'),200);
+        return response()->json(Api::format('1',$user,'valid_token'),200);
     }
 
+    // check user ketika user menggunakan login omni channel / manual dan diketahui user sudah mempunyai akun
     public function checkUserProvider(Request $request)
     {
-        $param = [
-            'ProviderId' => $request->provider_id
-        ];
-        $user = AuthRepo::UserByProvider($param);
-        return response()->json(Api::format(1,$user,'Success'), 200);
+        try {
+            $this->validate($request, [
+                'email'          => 'required|email'
+            ]);
+
+            $param = [
+                'Email' => $request->email
+            ];
+
+            $user = AuthRepo::UserByProvider($param);
+            
+            $status   = 1;
+            $httpcode = 200;
+            $data     = $user;
+            $errorMsg = 'Success';
+
+        }catch(\Exception $e){
+            $status   = 0;
+            $httpcode = 400;
+            $data     = null;
+            $errorMsg = $e->getMessage();
+        }
+        return response()->json(Api::format($status, $data, $errorMsg), $httpcode); 
     }
 }
