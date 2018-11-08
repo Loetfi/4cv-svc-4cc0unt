@@ -55,21 +55,30 @@ class AuthController extends Controller
             $user = AuthRepo::SearchEmail($request->email);
             
             if($user->count() > 0) {
-
                 if(Hash::check($request->password, $user->first()->Password)) {
-
-                    if (! $token = $this->jwt->fromUser($user->first())) {
-                     return response()->json(Api::format('1',[],'User not found'), 404);
-                 }
-
-             } else {
-
-                return response()->json(Api::format('0',[],'Your password wrong'), 400);
+                    if( (int) $user->first()->IsActive !== 1 ) { 
+                        
+                        // user not active
+                        return response()->json(Api::format('0',[],'Your account is not active'), 400);
+                    
+                    } else if (! $token = $this->jwt->fromUser($user->first())) {
+                        
+                        // get token 
+                        return response()->json(Api::format('0',[],'User not found'), 404);
+                    
+                    }
+                } else {
+                    
+                    // password wrong
+                    return response()->json(Api::format('0',[],'Your email or password wrong'), 400);
+                
+                }
+            } else {
+                
+                // email not register
+                return response()->json(Api::format('0',[],'Your email not registered'), 400);           	
+            
             }
-        } else {
-
-            return response()->json(Api::format('0',[],'Your email not registered'), 400);           	
-        }
 
     } catch (\Exception $e) {
 
@@ -107,6 +116,7 @@ class AuthController extends Controller
                 'Provider'      => $request->provider ? $request->provider : null,
                 'ProviderId'    => $request->provider_id ? $request->provider_id : null,
                 'Avatar'        => $request->avatar ? $request->avatar : null,
+                'IsActive'      => $request->is_active ? $request->is_active : 0,
             ];
 
             $user = AuthRepo::RegisterUser($data_user);
