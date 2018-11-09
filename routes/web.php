@@ -25,9 +25,7 @@ $router->group(['prefix'=>'auth'], function($router) {
 	$router->get('check-token','AuthController@checkToken');
 		
 	$router->post('login','AuthController@login');
-		
-	$router->post('register','AuthController@register');
-		
+
 	$router->post('check-user-provider','AuthController@checkUserProvider');
 
 	$router->group(['middleware'=>'jwt'], function($router) {
@@ -35,4 +33,8 @@ $router->group(['prefix'=>'auth'], function($router) {
 		$router->get('logout','AuthController@logout');
 
 	});
+
+	$router->post('register','RegisterController@register');
+	
+	$router->post('register/active-account','RegisterController@activeAccount');
 });

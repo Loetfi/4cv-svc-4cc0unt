@@ -80,54 +80,14 @@ class AuthController extends Controller
             
             }
 
-    } catch (\Exception $e) {
-
-        return response()->json(Api::format('0',[], $e->getMessage()), 500);
-
-    }
-
-    return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,
-        'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
-}
-
-    /**
-    * @param FullName string
-    * @param Email unique
-    * @param Password min 6, ConfirmPassword same Password
-    * @param PhoneNumer numeric
-    * @return json response
-    */
-    public function register(Request $request)
-    {
-        $this->validate($request, [
-            'fullname'          => 'required|string',
-            'email'             => 'required|email|unique:users,Email',
-            'password'          => 'required|min:6',
-            'confirm_password'  => 'required|same:password',
-            'phone_number'      => 'numeric',
-        ]);
-
-        try {
-            $data_user = [
-                'FullName'      => $request->fullname,
-                'Email'         => $request->email,
-                'Password'      => Hash::make($request->password),
-                'PhoneNumer'    => $request->phone_number ? $request->phone_number : null,
-                'Provider'      => $request->provider ? $request->provider : null,
-                'ProviderId'    => $request->provider_id ? $request->provider_id : null,
-                'Avatar'        => $request->avatar ? $request->avatar : null,
-                'IsActive'      => $request->is_active ? $request->is_active : 0,
-            ];
-
-            $user = AuthRepo::RegisterUser($data_user);
-
-            return response()->json(Api::format('1',$user,'Success Register'), 200);
-
         } catch (\Exception $e) {
 
-            return response()->json(Api::format('0',[],$e->getMessage()), 500);
+            return response()->json(Api::format('0',[], $e->getMessage()), 500);
 
         }
+
+        return response()->json(Api::format('1',['token_type'=>'Bearer','access_token'=>$token,
+            'expires_in' => $this->guard()->factory()->getTTL() * 60],'Success'), 200);
     }
 
     /**
