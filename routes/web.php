@@ -38,3 +38,22 @@ $router->group(['prefix'=>'auth'], function($router) {
 	
 	$router->post('register/active-account','RegisterController@activeAccount');
 });
+
+$router->group(['prefix'=>'admin-auth'], function($router) {
+
+	$router->get('check-token','AdminAuthController@checkToken');
+		
+	$router->post('login','AdminAuthController@login');
+
+	// $router->post('check-user-provider','AuthController@checkUserProvider');
+
+	// $router->group(['middleware'=>'jwt'], function($router) {
+
+	// 	$router->get('logout','AuthController@logout');
+
+	// });
+
+	// $router->post('register','RegisterController@register');
+	
+	// $router->post('register/active-account','RegisterController@activeAccount');
+});
