@@ -59,24 +59,24 @@ class AuthController extends Controller
                     if( (int) $user->first()->IsActive !== 1 ) { 
                         
                         // user not active
-                        return response()->json(Api::format('0',[],'Your account is not active'), 400);
+                        return response()->json(Api::format('0',[],'Akun tidak aktif'), 400);
                     
                     } else if (! $token = $this->jwt->fromUser($user->first())) {
                         
                         // get token 
-                        return response()->json(Api::format('0',[],'User not found'), 404);
+                        return response()->json(Api::format('0',[],'User tidak ditemukan'), 404);
                     
                     }
                 } else {
                     
                     // password wrong
-                    return response()->json(Api::format('0',[],'Your email or password wrong'), 400);
+                    return response()->json(Api::format('0',[],'Email atau password salah'), 400);
                 
                 }
             } else {
                 
                 // email not register
-                return response()->json(Api::format('0',[],'Your email not registered'), 400);           	
+                return response()->json(Api::format('0',[],'Email tidak terdaftar'), 400);           	
             
             }
 
