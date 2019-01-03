@@ -94,10 +94,16 @@ class AuthController extends Controller
     * Logout user (Validate token)
     * @return json response
     */
-    public function logout()
+    public function logout(Request $request)
     {
-        $this->guard()->logout();
-        // print_r($a);die();
+        /*
+        * if error You must have the blacklist enabled to invalidate a token.
+        * solution set false to true blacklist_enabled
+        * tymon\jwt-auth\config\config.php 'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true).
+        */
+        $token = str_replace('Bearer', '', $request->header('Authorization'));
+        $this->guard()->invalidate($token);
+
         return response()->json(Api::format('1',[],'Success logout'), 200);
     }
 
