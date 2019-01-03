@@ -46,7 +46,7 @@ class RegisterController extends Controller
 
             $user = AuthRepo::RegisterUser($data_user);
 
-            return response()->json(Api::format('1',$user,'Success Register'), 200);
+            return response()->json(Api::format('1',$user,'Berhasil Registrasi'), 200);
 
         } catch (\Exception $e) {
 
@@ -64,7 +64,7 @@ class RegisterController extends Controller
 
     		UserRepo::UpdateByEmail($request->email,$data_user);
 
-    		return response()->json(Api::format('1',[],'Your account success to activated'), 200);
+    		return response()->json(Api::format('1',[],'Akun anda berhasil diaktivasi'), 200);
     	} catch (\Exception $e) {
 	        return response()->json(Api::format('0',[],$e->getMessage()), 500);
     	}
